@@ -45,6 +45,12 @@ for i in range(50):
 
     roundedBrightestSpot = (round(brightestSpot[0]), round(brightestSpot[1]))
 
+    if brightestWeight == 0:
+        score = 0
+    else:
+        color = img.get_at(roundedBrightestSpot)
+        score = (color.r + color.g + color.b) * 5 + brightestWeight;
+
     for x in range(img.get_width()):
         img.set_at((x, roundedBrightestSpot[1]), highlightColor)
 
