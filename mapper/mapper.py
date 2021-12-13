@@ -15,9 +15,13 @@ cam = pygame.camera.Camera(cams[0], (1280,720))
 
 leds = neopixel.NeoPixel(board.D18, 50, pixel_order=neopixel.RGB)
 
-results = open("output/results.txt", "w", buffering = 1)
+class Mapping:
+    def __init__(self, x, y, score):
+        self.x = x
+        self.y = y
+        self.score = score
 
-for i in range(50):
+def mapLED(i):
     leds[i] = (50, 50, 50)
 
     # Toggling on and off camera each time because otherwise I appear to get old images 
@@ -53,8 +57,6 @@ for i in range(50):
         color = img.get_at(roundedBrightestSpot)
         score = (color.r + color.g + color.b) * 5 + brightestWeight;
 
-    results.write(str(i) + ": (" + str(brightestSpot[0]) + ", " + str(brightestSpot[1])  + ") ~" + str(score) + " :" + str(brightestWeight) + "\n")
-
     for x in range(img.get_width()):
         img.set_at((x, roundedBrightestSpot[1]), highlightColor)
 
@@ -62,7 +64,24 @@ for i in range(50):
         img.set_at((roundedBrightestSpot[0], y), highlightColor)
 
     pygame.image.save(img,"output/led-" + str(i) + "-highlighted.jpg")
-
+    
     print("Led " + str(i) + " mapped")
+
+    return Mapping(brightestSpot[0], brightestSpot[1], score)
+
+def mapLEDs():
+    mappings = []
+
+    for i in range(5):
+        mappings.append(mapLED(i))
+
+    return mappings
+
+mappings = mapLEDs()
+
+results = open("output/results.txt", "w")
+
+for i, mapping in enumerate(mappings):
+    results.write(str(i) + ": (" + str(mapping.x) + ", " + str(mapping.y)  + ") ~" + str(mapping.score) + "\n")
 
 results.close()
