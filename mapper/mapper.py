@@ -15,6 +15,8 @@ cam = pygame.camera.Camera(cams[0], (1280,720))
 
 leds = neopixel.NeoPixel(board.D18, 50, pixel_order=neopixel.RGB)
 
+results = open("output/results.txt", "w", buffering = 1)
+
 for i in range(50):
     leds[i] = (50, 50, 50)
 
@@ -51,6 +53,8 @@ for i in range(50):
         color = img.get_at(roundedBrightestSpot)
         score = (color.r + color.g + color.b) * 5 + brightestWeight;
 
+    results.write(str(i) + ": (" + str(brightestSpot[0]) + ", " + str(brightestSpot[1])  + ") ~" + str(score) + " :" + str(brightestWeight) + "\n")
+
     for x in range(img.get_width()):
         img.set_at((x, roundedBrightestSpot[1]), highlightColor)
 
@@ -60,3 +64,5 @@ for i in range(50):
     pygame.image.save(img,"output/led-" + str(i) + "-highlighted.jpg")
 
     print("Led " + str(i) + " mapped")
+
+results.close()
