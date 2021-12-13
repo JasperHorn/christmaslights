@@ -13,17 +13,17 @@ pygame.camera.init()
 cams = pygame.camera.list_cameras() 
 cam = pygame.camera.Camera(cams[0], (1280,720))
 
-cam.start()
-
-# First image often contains a weird brightness tear, so we discard it
-cam.get_image()
-
 leds = neopixel.NeoPixel(board.D18, 50, pixel_order=neopixel.RGB)
 
 for i in range(50):
     leds[i] = (255, 255, 255)
 
+    # Toggling on and off camera each time because otherwise I appear to get old images 
+    cam.start()
+    # But also throw away the first image because it has a brightness tear
+    cam.get_image()
     img = cam.get_image()
+    cam.stop()
 
     pygame.image.save(img,"output/led-" + str(i) + ".jpg")
 
