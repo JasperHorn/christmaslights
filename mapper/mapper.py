@@ -7,13 +7,15 @@ import pygame.camera
 import neopixel
 import board
 
+import config
+
 highlightColor = (255, 128, 0);
 
 pygame.camera.init()
 cams = pygame.camera.list_cameras() 
-cam = pygame.camera.Camera(cams[0], (1280,720))
+cam = pygame.camera.Camera(cams[0], config.cameraResolution)
 
-leds = neopixel.NeoPixel(board.D18, 50, pixel_order=neopixel.RGB)
+leds = neopixel.NeoPixel(board.D18, config.numberOfLEDs, pixel_order=neopixel.RGB)
 
 class Mapping:
     def __init__(self, x, y, score):
@@ -72,7 +74,7 @@ def mapLED(i):
 def mapLEDs():
     mappings = []
 
-    for i in range(5):
+    for i in range(config.numberOfLEDs):
         mappings.append(mapLED(i))
 
     return mappings
