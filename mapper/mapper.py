@@ -79,9 +79,30 @@ def mapLEDs():
 
     return mappings
 
+def postProcess(mappings):
+    for mapping in mappings:
+        if config.postProcess.flip:
+            mapping.x = config.cameraResolution[0] - 1 - mapping.x;
+            mapping.y = config.cameraResolution[1] - 1 - mapping.y;
+
+        mapping.x = mapping.x / config.cameraResolution[0] * (config.postProcess.normalize.imageRight - config.postProcess.normalize.imageLeft) + config.postProcess.normalize.imageLeft
+        mapping.y = mapping.y / config.cameraResolution[1] * (config.postProcess.normalize.imageTop - config.postProcess.normalize.imageBottom) + config.postProcess.normalize.imageBottom
+
+        if config.postProcess.rotate:
+            x = mapping.x
+            y = mapping.y
+            mapping.x = y
+            mapping.y = x
+
+        if config.postProcess.round:
+            mapping.x = round(mapping.x)
+            mapping.y = round(mapping.y)
+
 mappings = mapLEDs()
+postProcess(mappings)
 
 results = open("output/results.txt", "w")
+
 
 for i, mapping in enumerate(mappings):
     results.write(str(i) + ": (" + str(mapping.x) + ", " + str(mapping.y)  + ") ~" + str(mapping.score) + "\n")
