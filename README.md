@@ -42,8 +42,8 @@ should work on Raspberry Pi OS.
 The library to control the LEDs needs root access. However, python virtual
 environments do not work nicely while running as root out of the box. That's
 why each of the projects contains a `sudopython` file. You can use this as
-you would use `sudo python`. However, it adds the bits that make it run in
-the virtual environment you're currently in.
+you would use `sudo python` (e.g. `./sudopython test.py`). However, it adds
+the bits that make it run in the virtual environment you're currently in.
 
 ## Interesting files
 
