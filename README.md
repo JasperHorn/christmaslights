@@ -51,6 +51,7 @@ the bits that make it run in the virtual environment you're currently in.
   - test.py: contains the effects - all but one are commented out, though
 - mapper: generate a 3d mapping
   - config.py: config such as the number of LEDs and camera resolution
+  - frame.py: takes a picture, usable to get the tree in frame
 - threedimensional: 3d effect
   - coords.txt: copy this file from mapper/output/results.txt
   - test.py: runs a simple changing color in a direction (change file to change direction)
