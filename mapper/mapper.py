@@ -23,6 +23,12 @@ class Mapping:
         self.y = y
         self.score = score
 
+class Coordinate:
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
 def mapLED(i):
     leds[i] = (50, 50, 50)
 
@@ -98,13 +104,61 @@ def postProcess(mappings):
             mapping.x = round(mapping.x)
             mapping.y = round(mapping.y)
 
-mappings = mapLEDs()
-postProcess(mappings)
+def scanSide():
+    mappings = mapLEDs()
+    postProcess(mappings)
+
+    return mappings
+
+input("Press enter to start scanning")
+front = scanSide()
+
+input("Rotate tree 90 degrees and then press enter to scan second side")
+right = scanSide() # might be the left side in reality, but that doesn't matter
+
+input("Rotate tree 90 degrees and then press enter to scan third side")
+back = scanSide()
+
+input("Rotate tree 90 degrees and then press enter to scan fourth side")
+left = scanSide()
+
+coordinates = []
+
+shiftHorizontal = config.postProcess.normalize.imageLeft + config.postProcess.normalize.imageRight
+shiftVertical = config.postProcess.normalize.imageBottom + config.postProcess.normalize.imageTop
+
+if config.postProcess.rotate:
+    hor = shiftHorizontal
+    ver = shiftVertical
+    shiftHorizontal = ver
+    shiftVertical = hor
+
+for i in range(config.numberOfLEDs):
+    if front[i].score > back[i].score:
+        x = front[i].x
+    else:
+        x = back[i].x * -1 + shiftHorizontal
+
+    if right[i].score > left[i].score:
+        z = right[i].x
+    else:
+        z = left[i].x * -1 + shiftHorizontal
+
+    if front[i].score > right[i].score and front[i].score > back[i].score and front[i].score > left[i].score:
+        y = front[i].y
+    elif right[i].score > back[i].score and right[i].score > left[i].score:
+        y = right[i].y
+    elif back[i].score > left[i].score:
+        y = back[i].y
+    else:
+        y = left[i].y
+
+    coordinates.append(Coordinate(x, y, z))
+
 
 results = open("output/results.txt", "w")
 
-
-for i, mapping in enumerate(mappings):
-    results.write(str(i) + ": (" + str(mapping.x) + ", " + str(mapping.y)  + ") ~" + str(mapping.score) + "\n")
+for coordinate in coordinates:
+    results.write("[" + str(coordinate.x) + ", " + str(coordinate.y)  + ", " + str(coordinate.z) + "]\n")
 
 results.close()
