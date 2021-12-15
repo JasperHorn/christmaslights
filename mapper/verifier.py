@@ -71,6 +71,23 @@ ledCoordinates = []
 for i, coordinate in enumerate(coords):
     ledCoordinates.append((i, coordinate))
 
-ledCoordinates.sort(key=lambda led: led[1][0])
+print()
+print("Now checking x coordinate")
+print()
 
+ledCoordinates.sort(key=lambda led: led[1][0])
+findFaultyCoordinates(ledCoordinates)
+
+print()
+print("Now checking y coordinate")
+print()
+
+ledCoordinates.sort(key=lambda led: led[1][1])
+findFaultyCoordinates(ledCoordinates)
+
+print()
+print("Now checking z coordinate")
+print()
+
+ledCoordinates.sort(key=lambda led: led[1][2])
 findFaultyCoordinates(ledCoordinates)
