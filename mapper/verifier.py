@@ -53,18 +53,35 @@ def markLED(ledCoordinates, n):
         else:
             leds[ledCoordinate[0]] = afterColor
 
+def readResultInput():
+    while True:
+        key = readchar.readkey()
+
+        if key == ' ':
+            return True
+        elif key == 'x':
+            return False
+
 def findFaultyCoordinates(ledCoordinates):
     directionGradient(ledCoordinates)
 
     input("Press enter to start verifying in the direction from red to blue")
 
     print()
-    print("Press any key to move to the next LED")
+    print("Press space if the green LED is correct, x if it is not")
+
+    faultyLeds = []
 
     for i, coordinate in enumerate(ledCoordinates):
         markLED(ledCoordinates, i)
 
-        readchar.readkey()
+        result = readResultInput()
+
+        if not result:
+            faultyLeds.append(coordinate[0])
+
+    return faultyLeds
+
 
 ledCoordinates = []
 
@@ -76,18 +93,28 @@ print("Now checking x coordinate")
 print()
 
 ledCoordinates.sort(key=lambda led: led[1][0])
-findFaultyCoordinates(ledCoordinates)
+faultyX = findFaultyCoordinates(ledCoordinates)
 
 print()
 print("Now checking y coordinate")
 print()
 
 ledCoordinates.sort(key=lambda led: led[1][1])
-findFaultyCoordinates(ledCoordinates)
+faultyY = findFaultyCoordinates(ledCoordinates)
 
 print()
 print("Now checking z coordinate")
 print()
 
 ledCoordinates.sort(key=lambda led: led[1][2])
-findFaultyCoordinates(ledCoordinates)
+faultyZ = findFaultyCoordinates(ledCoordinates)
+
+faultsFile = open("output/faults.json", "w")
+
+faultsFile.write("{\n")
+faultsFile.write("    \"x\":" + str(faultyX) + ",\n")
+faultsFile.write("    \"y\":" + str(faultyY) + ",\n")
+faultsFile.write("    \"z\":" + str(faultyZ) + "\n")
+faultsFile.write("}\n")
+
+faultsFile.close()
