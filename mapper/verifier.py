@@ -2,6 +2,7 @@
 import neopixel
 import board
 import re
+import readchar
 
 beforeColor = (128, 0, 0)
 currentColor = (0, 128, 0)
@@ -43,10 +44,27 @@ def directionGradient(ledCoordinates):
     for i,ledCoordinate in enumerate(ledCoordinates):
         leds[ledCoordinate[0]] = mix_colors(beforeColor, afterColor, i / 49)
 
+def markLED(ledCoordinates, n):
+    for i,ledCoordinate in enumerate(ledCoordinates):
+        if i < n:
+            leds[ledCoordinate[0]] = beforeColor
+        elif i == n:
+            leds[ledCoordinate[0]] = currentColor
+        else:
+            leds[ledCoordinate[0]] = afterColor
+
 def findFaultyCoordinates(ledCoordinates):
     directionGradient(ledCoordinates)
 
     input("Press enter to start verifying in the direction from red to blue")
+
+    print()
+    print("Press any key to move to the next LED")
+
+    for i, coordinate in enumerate(ledCoordinates):
+        markLED(ledCoordinates, i)
+
+        readchar.readkey()
 
 ledCoordinates = []
 
