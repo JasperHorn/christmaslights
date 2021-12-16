@@ -3,6 +3,7 @@ import time
 import sys
 import json
 import types
+import pathlib
 
 import pygame
 import pygame.camera
@@ -12,7 +13,16 @@ import board
 
 import config
 
-highlightColor = (255, 128, 0);
+highlightColor = (255, 128, 0)
+
+outputBaseDir = "output"
+outputDir = outputBaseDir
+
+pathlib.Path(outputDir).mkdir(exist_ok = True)
+pathlib.Path(outputDir + "/left").mkdir(exist_ok = True)
+pathlib.Path(outputDir + "/right").mkdir(exist_ok = True)
+pathlib.Path(outputDir + "/front").mkdir(exist_ok = True)
+pathlib.Path(outputDir + "/back").mkdir(exist_ok = True)
 
 pygame.camera.init()
 cams = pygame.camera.list_cameras() 
@@ -42,7 +52,7 @@ def mapLED(i):
     img = cam.get_image()
     cam.stop()
 
-    pygame.image.save(img,"output/led-" + str(i) + ".jpg")
+    pygame.image.save(img, outputDir + "/led-" + str(i) + ".jpg")
 
     brightestSpot = (0, 0)
     brightestWeight = 0
@@ -74,7 +84,7 @@ def mapLED(i):
     for y in range(img.get_height()):
         img.set_at((roundedBrightestSpot[0], y), highlightColor)
 
-    pygame.image.save(img,"output/led-" + str(i) + "-highlighted.jpg")
+    pygame.image.save(img, outputDir + "/led-" + str(i) + "-highlighted.jpg")
     
     print("Led " + str(i) + " mapped")
 
@@ -116,9 +126,9 @@ def scanSide(targetedLEDs):
     return mappings
 
 if len(sys.argv) == 2 and sys.argv[1] == 'fix':
-    with open('output/faults.json','r') as faultsFile:
+    with open(outputDir + '/faults.json','r') as faultsFile:
         targeted = json.loads(faultsFile.read())
-    with open('output/coords.txt', 'r') as resultsFile:
+    with open(outputDir + '/coords.txt', 'r') as resultsFile:
         def lineToCoordinate(line):
             l = json.loads(line)
             return Coordinate(l[0], l[1], l[2])
@@ -136,16 +146,22 @@ else:
 allTargeted = set(targeted["x"] + targeted["y"] + targeted["z"])
 
 input("Press enter to start scanning")
+outputDir = outputBaseDir + "/front"
 front = scanSide(allTargeted)
 
 input("Rotate tree 90 degrees and then press enter to scan second side")
+outputDir = outputBaseDir + "/right"
 right = scanSide(allTargeted) # might be the left side in reality, but that doesn't matter
 
 input("Rotate tree 90 degrees and then press enter to scan third side")
+outputDir = outputBaseDir + "/back"
 back = scanSide(allTargeted)
 
 input("Rotate tree 90 degrees and then press enter to scan fourth side")
+outputDir = outputBaseDir + "/left"
 left = scanSide(allTargeted)
+
+outputDir = outputBaseDir
 
 shiftHorizontal = config.postProcess.normalize.imageLeft + config.postProcess.normalize.imageRight
 shiftVertical = config.postProcess.normalize.imageBottom + config.postProcess.normalize.imageTop
@@ -178,7 +194,7 @@ for i in targeted["y"]:
     else:
         coordinates[i].y = left[i].y
 
-results = open("output/coords.txt", "w")
+results = open(outputDir + "/coords.txt", "w")
 
 for coordinate in coordinates:
     results.write("[" + str(coordinate.x) + ", " + str(coordinate.y)  + ", " + str(coordinate.z) + "]\n")
