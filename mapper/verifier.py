@@ -19,7 +19,7 @@ def mix_colors(color1, color2, weight):
 ## (which was possible because I used the same format)
 ##
 
-coordfilename = "output/results.txt"
+coordfilename = "output/coords.txt"
 fin = open(coordfilename,'r')
 coords_raw = fin.readlines()
 

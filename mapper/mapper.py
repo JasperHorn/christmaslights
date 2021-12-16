@@ -118,7 +118,7 @@ def scanSide(targetedLEDs):
 if len(sys.argv) == 2 and sys.argv[1] == 'fix':
     with open('output/faults.json','r') as faultsFile:
         targeted = json.loads(faultsFile.read())
-    with open('output/results.txt', 'r') as resultsFile:
+    with open('output/coords.txt', 'r') as resultsFile:
         def lineToCoordinate(line):
             l = json.loads(line)
             return Coordinate(l[0], l[1], l[2])
@@ -178,7 +178,7 @@ for i in targeted["y"]:
     else:
         coordinates[i].y = left[i].y
 
-results = open("output/results.txt", "w")
+results = open("output/coords.txt", "w")
 
 for coordinate in coordinates:
     results.write("[" + str(coordinate.x) + ", " + str(coordinate.y)  + ", " + str(coordinate.z) + "]\n")
