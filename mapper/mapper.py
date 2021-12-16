@@ -1,5 +1,8 @@
 
 import time
+import sys
+import json
+import types
 
 import pygame
 import pygame.camera
@@ -77,16 +80,18 @@ def mapLED(i):
 
     return Mapping(brightestSpot[0], brightestSpot[1], score)
 
-def mapLEDs():
-    mappings = []
+def mapLEDs(targetedLEDs):
+    mappings = {}
 
-    for i in range(config.numberOfLEDs):
-        mappings.append(mapLED(i))
+    for i in targetedLEDs:
+        mappings[i] = mapLED(i)
 
     return mappings
 
 def postProcess(mappings):
-    for mapping in mappings:
+    for i in mappings:
+        mapping = mappings[i]
+
         if config.postProcess.flip:
             mapping.x = config.cameraResolution[0] - 1 - mapping.x;
             mapping.y = config.cameraResolution[1] - 1 - mapping.y;
@@ -104,25 +109,43 @@ def postProcess(mappings):
             mapping.x = round(mapping.x)
             mapping.y = round(mapping.y)
 
-def scanSide():
-    mappings = mapLEDs()
+def scanSide(targetedLEDs):
+    mappings = mapLEDs(targetedLEDs)
     postProcess(mappings)
 
     return mappings
 
+if len(sys.argv) == 2 and sys.argv[1] == 'fix':
+    with open('output/faults.json','r') as faultsFile:
+        targeted = json.loads(faultsFile.read())
+    with open('output/results.txt', 'r') as resultsFile:
+        def lineToCoordinate(line):
+            l = json.loads(line)
+            return Coordinate(l[0], l[1], l[2])
+
+        coordinates = list(map(lineToCoordinate, resultsFile.readlines()))
+else:
+    targeted = {
+        "x": list(range(config.numberOfLEDs)),
+        "y": list(range(config.numberOfLEDs)),
+        "z": list(range(config.numberOfLEDs))
+    }
+
+    coordinates = list(map(lambda i: Coordinate(0, 0, 0), range(config.numberOfLEDs)))
+
+allTargeted = set(targeted["x"] + targeted["y"] + targeted["z"])
+
 input("Press enter to start scanning")
-front = scanSide()
+front = scanSide(allTargeted)
 
 input("Rotate tree 90 degrees and then press enter to scan second side")
-right = scanSide() # might be the left side in reality, but that doesn't matter
+right = scanSide(allTargeted) # might be the left side in reality, but that doesn't matter
 
 input("Rotate tree 90 degrees and then press enter to scan third side")
-back = scanSide()
+back = scanSide(allTargeted)
 
 input("Rotate tree 90 degrees and then press enter to scan fourth side")
-left = scanSide()
-
-coordinates = []
+left = scanSide(allTargeted)
 
 shiftHorizontal = config.postProcess.normalize.imageLeft + config.postProcess.normalize.imageRight
 shiftVertical = config.postProcess.normalize.imageBottom + config.postProcess.normalize.imageTop
@@ -133,28 +156,27 @@ if config.postProcess.rotate:
     shiftHorizontal = ver
     shiftVertical = hor
 
-for i in range(config.numberOfLEDs):
+for i in targeted["x"]:
     if front[i].score > back[i].score:
-        x = front[i].x
+        coordinates[i].x = front[i].x
     else:
-        x = back[i].x * -1 + shiftHorizontal
+        coordinates[i].x = back[i].x * -1 + shiftHorizontal
 
+for i in targeted["z"]:
     if right[i].score > left[i].score:
-        z = right[i].x
+        coordinates[i].z = right[i].x
     else:
-        z = left[i].x * -1 + shiftHorizontal
+        coordinates[i].z = left[i].x * -1 + shiftHorizontal
 
+for i in targeted["y"]:
     if front[i].score > right[i].score and front[i].score > back[i].score and front[i].score > left[i].score:
-        y = front[i].y
+        coordinates[i].y = front[i].y
     elif right[i].score > back[i].score and right[i].score > left[i].score:
-        y = right[i].y
+        coordinates[i].y = right[i].y
     elif back[i].score > left[i].score:
-        y = back[i].y
+        coordinates[i].y = back[i].y
     else:
-        y = left[i].y
-
-    coordinates.append(Coordinate(x, y, z))
-
+        coordinates[i].y = left[i].y
 
 results = open("output/results.txt", "w")
 
