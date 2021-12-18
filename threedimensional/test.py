@@ -7,7 +7,7 @@ import sys
 import time
 import board
 import neopixel
-import re
+import json
 import random
 
 ##
@@ -50,36 +50,12 @@ elif sys.argv[1] == 'z':
 else:
     raise Exception("If an argument is provided, it should be x, y or z")
 
-##
-## I straight up copied reading the coordinates from
-## https://github.com/standupmaths/xmastree2020
-## (which was possible because I used the same format)
-##
+with open("coords.txt",'r') as coordinatesFile:
+    coordinates = list(map(json.loads, coordinatesFile.readlines()))
 
-coordfilename = "coords.txt"
-	
-fin = open(coordfilename,'r')
-coords_raw = fin.readlines()
+pixelCount = len(coordinates)
     
-coords_bits = [i.split(",") for i in coords_raw]
-    
-coords = []
-    
-for slab in coords_bits:
-    new_coord = []
-    for i in slab:
-        new_coord.append(int(re.sub(r'[^-\d]','', i)))
-    coords.append(new_coord)
-
-PIXEL_COUNT = len(coords)
-    
-pixels = neopixel.NeoPixel(board.D18, PIXEL_COUNT, auto_write=False)
-
-##
-## Finally, some original code
-## (in the sense that I wrote it, just about every game engine looks like
-## this, so it's not truly "original")
-##
+pixels = neopixel.NeoPixel(board.D18, pixelCount, auto_write=False)
 
 t = time.clock_gettime(time.CLOCK_MONOTONIC)
 color = random_color()
@@ -97,7 +73,7 @@ while True:
         h = -450
         color = different_random_color(color)
 
-    for i, coordinate in enumerate(coords):
+    for i, coordinate in enumerate(coordinates):
         if coordinate[axis] < h:
             pixels[i] = color
 
