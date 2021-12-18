@@ -1,9 +1,8 @@
 # christmaslights
 
 I made a Christmas tree with addressable lights, similar to what Matt Parker
-(Stand-up Maths) did. His tree can be vieweed on Youtube:
-https://www.youtube.com/watch?v=TvlpIojusBE and his code can be found on Github:
-https://github.com/standupmaths/xmastree2020
+(Stand-up Maths) did. His tree can be viewed [on Youtube](1)
+and his code is [on Github](2) as well.
 
 I was inspired by his code, but I set out to write my own code to map the LEDs
 to their 3d coordinates. This repository contains the tools that I wrote to do so,
@@ -45,14 +44,44 @@ why each of the projects contains a `sudopython` file. You can use this as
 you would use `sudo python` (e.g. `./sudopython test.py`). However, it adds
 the bits that make it run in the virtual environment you're currently in.
 
-## Interesting files
+## Usage
 
-- onedimensional: several effects that do not require a mapping
-  - test.py: contains the effects - all but one are commented out, though
-- mapper: generate a 3d mapping
-  - config.py: config such as the number of LEDs and camera resolution
-  - frame.py: takes a picture, usable to get the tree in frame
-- threedimensional: 3d effect
-  - coords.txt: copy this file from mapper/output/results.txt
-  - test.py: runs a simple changing color in a direction (change file to change direction)
-  - off.py: turns all LEDs off
+### onedimensional
+
+`./sudopython test.py`: run a simple onedimensional effect
+
+(there are several effects in the code, but all but one are commented out)
+
+### mapper
+ 
+`config.py` contains config such as the number of LEDs and camera resolution, so
+you should modify this to fit your situation.
+
+`./sudopython frame.py`: takes a picture (saved to `output/photo.jpg`) which you can
+use to get the tree nicely in frame
+
+`./sudopython mapper.py`: start the mapping process. It will print out instructions,
+so just follow those. For best results, do the mapping in the dark (you can turn on
+the lights when it tells you to rotate the tree, as long as you turn them off again
+before pressing afterwards)
+
+`./sudopython verifier.py`: start a process to identify LEDs with incorrect coordinates
+
+`./sudopython mapper.py fix`: rescan LEDs with incorrect coordinates (uses the output
+from the verifier)
+
+`./sudopython identify.py n: light up the LED with index n up in green and any
+following indexes in blue. This can help identify LEDs if you need to map some of them
+by hand 
+
+### threedimensional
+
+`coords.txt` is the coordinate mapping and should be copied from `mapper/output/coords.txt`
+
+`./sudopython test.py`: A simple test script that just changes colors in one of the direction
+of one of the axes
+
+`./sudopython off.py`: turn all LEDs off
+
+[1]: https://www.youtube.com/watch?v=TvlpIojusBE
+[2]: https://github.com/standupmaths/xmastree2020
