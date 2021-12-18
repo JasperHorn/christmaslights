@@ -79,7 +79,13 @@ by hand
 `coords.txt` is the coordinate mapping and should be copied from `mapper/output/coords.txt`
 
 `./sudopython test.py`: A simple test script that just changes colors in one of the direction
-of one of the axes
+of the y axis
+
+`./sudopython test.pyi x`: Run the test for the x axis
+
+`./sudopython test.py y`: Run the test for the y axis (equivalent to leaving out the y)
+
+`./sudopython test.py z`: Run the test for the z axis
 
 `./sudopython off.py`: turn all LEDs off
 

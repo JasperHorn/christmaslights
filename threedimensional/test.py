@@ -3,6 +3,7 @@
 ## This is a really quick sample to see that my mapping is working
 ##
 
+import sys
 import time
 import board
 import neopixel
@@ -32,6 +33,22 @@ def different_random_color(old_color):
         color = random_color()
 
     return color
+
+
+##
+## read the axis from the arguments
+##
+
+if len(sys.argv) == 1:
+    axis = 1
+elif sys.argv[1] == 'x':
+    axis = 0
+elif sys.argv[1] == 'y':
+    axis = 1
+elif sys.argv[1] == 'z':
+    axis = 2
+else:
+    raise Exception("If an argument is provided, it should be x, y or z")
 
 ##
 ## I straight up copied reading the coordinates from
@@ -81,8 +98,7 @@ while True:
         color = different_random_color(color)
 
     for i, coordinate in enumerate(coords):
-        # Change the 1 here to either 0 or 2 to test different directions
-        if coordinate[1] < h:
+        if coordinate[axis] < h:
             pixels[i] = color
 
     pixels.show()
