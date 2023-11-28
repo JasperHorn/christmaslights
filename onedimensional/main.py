@@ -105,4 +105,4 @@ elif len(sys.argv) == 2 and sys.argv[1] == 'gradual':
 
         color1 = color3
 else:
-    print("Usage: ./sudopyton test.py off|one|randomize|moving-dot|fill|gradual")
+    print("Usage: ./sudopyton main.py off|one|randomize|moving-dot|fill|gradual")
