@@ -7,8 +7,6 @@ import sys
 
 ledCount = 250
 
-print('Argumehts: ', sys.argv)
-
 pixel = neopixel.NeoPixel(board.D18, ledCount, pixel_order=neopixel.RGB)
 
 def mix_colors(color1, color2, weight):
@@ -36,49 +34,66 @@ def different_random_color(old_color):
 
     return color
 
-## Single pixel red
 
-#pixel[0] = (255, 0, 0)
+if len(sys.argv) == 2 and sys.argv[1] == 'off':
+    pixel.fill((0, 0, 0))
+elif len(sys.argv) == 2 and sys.argv[1] == 'one':
+    ## Single pixel red
 
-## Random colors once
+    pixel[0] = (255, 0, 0)
 
-#for i in range(pixel.n):
-#    color = random_color() 
-#    pixel[i] = color
-#    time.sleep(0.2)
-
-## Single Dot moving through the wire
-
-#while True:
-#    color = random_color() 
-#
-#    for i in range(pixel.n):
-#        pixel[i] = color 
-#
-#        time.sleep(0.01)
-#
-#    for i in range(pixel.n):
-#        pixel[i] = (0, 0, 0) 
-#        
-#        time.sleep(0.005)
-
-## Gradual changes back and forth
-
-color1 = random_color()
-
-while True:
-    color2 = different_random_color(color1) 
-    color3 = different_random_color(color2)
+elif len(sys.argv) == 2 and sys.argv[1] == 'randomize':
+    ## Random colors once
 
     for i in range(pixel.n):
-        color = mix_colors(color1, color2, i / pixel.n);
+        color = random_color()
         pixel[i] = color
-        time.sleep(0.1)
+        time.sleep(0.05)
 
-    for i in range(pixel.n):
-        color = mix_colors(color2, color3, i / pixel.n);
-        pixel[pixel.n-1-i] = color
-        time.sleep(0.1)
+elif len(sys.argv) == 2 and sys.argv[1] == 'moving-dot':
+    ## Single Dot moving through the wire
 
-    color1 = color3
+    while True:
+        color = random_color()
 
+        for i in range(pixel.n):
+            pixel[i] = color
+            time.sleep(0.05)
+            pixel[i] = (0, 0, 0)
+
+elif len(sys.argv) == 2 and sys.argv[1] == 'fill':
+    ## Single Dot moving through the wire
+
+    while True:
+        color = random_color()
+
+        for i in range(pixel.n):
+            pixel[i] = color
+            time.sleep(0.01)
+
+        for i in range(pixel.n):
+            pixel[i] = (0, 0, 0)
+            time.sleep(0.005)
+
+elif len(sys.argv) == 2 and sys.argv[1] == 'gradual':
+    ## Gradual changes back and forth
+
+    color1 = random_color()
+
+    while True:
+        color2 = different_random_color(color1) 
+        color3 = different_random_color(color2)
+
+        for i in range(pixel.n):
+            color = mix_colors(color1, color2, i / pixel.n);
+            pixel[i] = color
+            time.sleep(0.005)
+
+        for i in range(pixel.n):
+            color = mix_colors(color2, color3, i / pixel.n);
+            pixel[pixel.n-1-i] = color
+            time.sleep(0.1)
+
+        color1 = color3
+else:
+    print("Usage: ./sudopyton test.py off|one|randomize|moving-dot|fill|gradual")
