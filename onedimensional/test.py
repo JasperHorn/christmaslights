@@ -7,7 +7,7 @@ import sys
 
 ledCount = 250
 
-pixel = neopixel.NeoPixel(board.D18, ledCount, pixel_order=neopixel.RGB)
+pixel = neopixel.NeoPixel(board.D18, ledCount, pixel_order=neopixel.RGB, auto_write=False)
 
 def mix_colors(color1, color2, weight):
     return (color1[0] * (1 - weight) + color2[0] * weight,
@@ -37,10 +37,13 @@ def different_random_color(old_color):
 
 if len(sys.argv) == 2 and sys.argv[1] == 'off':
     pixel.fill((0, 0, 0))
+    pixel.show()
+
 elif len(sys.argv) == 2 and sys.argv[1] == 'one':
     ## Single pixel red
 
     pixel[0] = (255, 0, 0)
+    pixel.show()
 
 elif len(sys.argv) == 2 and sys.argv[1] == 'randomize':
     ## Random colors once
@@ -48,6 +51,7 @@ elif len(sys.argv) == 2 and sys.argv[1] == 'randomize':
     for i in range(pixel.n):
         color = random_color()
         pixel[i] = color
+        pixel.show()
         time.sleep(0.05)
 
 elif len(sys.argv) == 2 and sys.argv[1] == 'moving-dot':
@@ -58,6 +62,7 @@ elif len(sys.argv) == 2 and sys.argv[1] == 'moving-dot':
 
         for i in range(pixel.n):
             pixel[i] = color
+            pixel.show()
             time.sleep(0.05)
             pixel[i] = (0, 0, 0)
 
@@ -69,10 +74,12 @@ elif len(sys.argv) == 2 and sys.argv[1] == 'fill':
 
         for i in range(pixel.n):
             pixel[i] = color
+            pixel.show()
             time.sleep(0.01)
 
         for i in range(pixel.n):
             pixel[i] = (0, 0, 0)
+            pixel.show()
             time.sleep(0.005)
 
 elif len(sys.argv) == 2 and sys.argv[1] == 'gradual':
@@ -87,11 +94,13 @@ elif len(sys.argv) == 2 and sys.argv[1] == 'gradual':
         for i in range(pixel.n):
             color = mix_colors(color1, color2, i / pixel.n);
             pixel[i] = color
+            pixel.show()
             time.sleep(0.005)
 
         for i in range(pixel.n):
             color = mix_colors(color2, color3, i / pixel.n);
             pixel[pixel.n-1-i] = color
+            pixel.show()
             time.sleep(0.1)
 
         color1 = color3
