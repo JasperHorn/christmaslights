@@ -140,4 +140,4 @@ elif len(sys.argv) == 2 and sys.argv[1] == 'rainbow':
         offset = (offset + 1) % leds.n
 
 else:
-    print("Usage: ./sudopyton main.py off|one|randomize|moving-dot|fill|gradual")
+    print("Usage: ./sudopyton main.py off|one|randomize|moving-dot|fill|gradual|rainbow")
