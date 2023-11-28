@@ -5,9 +5,11 @@ import random
 import time
 import sys
 
+ledCount = 250
+
 print('Argumehts: ', sys.argv)
 
-pixel = neopixel.NeoPixel(board.D18, 50, pixel_order=neopixel.RGB)
+pixel = neopixel.NeoPixel(board.D18, ledCount, pixel_order=neopixel.RGB)
 
 def mix_colors(color1, color2, weight):
     return (color1[0] * (1 - weight) + color2[0] * weight,
@@ -40,7 +42,7 @@ def different_random_color(old_color):
 
 ## Random colors once
 
-#for i in range(50):
+#for i in range(pixel.n):
 #    color = random_color() 
 #    pixel[i] = color
 #    time.sleep(0.2)
@@ -50,12 +52,12 @@ def different_random_color(old_color):
 #while True:
 #    color = random_color() 
 #
-#    for i in range(50):
+#    for i in range(pixel.n):
 #        pixel[i] = color 
 #
 #        time.sleep(0.01)
 #
-#    for i in range(50):
+#    for i in range(pixel.n):
 #        pixel[i] = (0, 0, 0) 
 #        
 #        time.sleep(0.005)
@@ -68,14 +70,14 @@ while True:
     color2 = different_random_color(color1) 
     color3 = different_random_color(color2)
 
-    for i in range(50):
-        color = mix_colors(color1, color2, i / 50);
+    for i in range(pixel.n):
+        color = mix_colors(color1, color2, i / pixel.n);
         pixel[i] = color
         time.sleep(0.1)
 
-    for i in range(50):
-        color = mix_colors(color2, color3, i / 50);
-        pixel[50-1-i] = color
+    for i in range(pixel.n):
+        color = mix_colors(color2, color3, i / pixel.n);
+        pixel[pixel.n-1-i] = color
         time.sleep(0.1)
 
     color1 = color3
