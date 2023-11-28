@@ -4,6 +4,7 @@ import neopixel
 import random
 import time
 import sys
+import math
 
 ledCount = 250
 
@@ -104,5 +105,39 @@ elif len(sys.argv) == 2 and sys.argv[1] == 'gradual':
             time.sleep(0.1)
 
         color1 = color3
+
+elif len(sys.argv) == 2 and sys.argv[1] == 'rainbow':
+    ## A raibow moving through the leds
+
+    colors = [
+        (128, 0, 0),
+        (128, 32, 0),
+        (128, 128, 0),
+        (0, 128, 0),
+        (0, 0, 128),
+        (32, 0, 128)
+    ]
+
+    offset = 0;
+
+    colorDistance = leds.n / len(colors)
+
+    while True:
+        for i in range(leds.n):
+            n = (i + offset) % leds.n
+
+            colorIndex = math.floor(n / colorDistance)
+            color1 = colors[colorIndex]
+            color2 = colors[(colorIndex + 1) % len(colors)]
+
+            mixFactor = (n % colorDistance) / colorDistance;
+
+            color = mix_colors(color1, color2, mixFactor);
+
+            leds[i] = color
+
+        leds.show()
+        offset = (offset + 1) % leds.n
+
 else:
     print("Usage: ./sudopyton main.py off|one|randomize|moving-dot|fill|gradual")
