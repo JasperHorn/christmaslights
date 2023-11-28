@@ -41,16 +41,26 @@ should work on Raspberry Pi OS.
 The library to control the LEDs needs root access. However, python virtual
 environments do not work nicely while running as root out of the box. That's
 why each of the projects contains a `sudopython` file. You can use this as
-you would use `sudo python` (e.g. `./sudopython test.py`). However, it adds
+you would use `sudo python` (e.g. `./sudopython main.py`). However, it adds
 the bits that make it run in the virtual environment you're currently in.
 
 ## Usage
 
 ### onedimensional
 
-`./sudopython test.py`: run a simple onedimensional effect
+`./sudopython main.py off`: turn all leds off
 
-(there are several effects in the code, but all but one are commented out)
+`./sudopython main.py one`: make the first led red (and all others off)
+
+`./sudopython main.py randomize`: one by one, randomize the colors of all leds
+
+`./sudopython main.py moving-dot`: Have one pixel move through the leds 
+
+`./sudopython main.py fill`: one by one, turn on all leds
+
+`./sudopython main.py gradual`: a gradient effect that moves back and forth
+
+`./sudopython main.py rainbow`: a rainbow effect that moves through the leds
 
 ### mapper
  
