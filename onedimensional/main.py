@@ -138,6 +138,14 @@ elif len(sys.argv) == 2 and sys.argv[1] == 'rainbow':
 
         leds.show()
         offset = (offset + 1) % leds.n
+elif len(sys.argv) == 2 and sys.argv[1] == 'white':
+    leds.fill((64, 64, 64))
+    leds.show()
+
+elif len(sys.argv) == 2 and sys.argv[1] == 'repeat-white':
+    while True:
+        leds.fill((64, 64, 64))
+        leds.show()
 
 else:
-    print("Usage: ./sudopyton main.py off|one|randomize|moving-dot|fill|gradual|rainbow")
+    print("Usage: ./sudopyton main.py off|one|randomize|moving-dot|fill|gradual|rainbow|white|repeat-white")

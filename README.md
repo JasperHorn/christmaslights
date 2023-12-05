@@ -62,6 +62,10 @@ the bits that make it run in the virtual environment you're currently in.
 
 `./sudopython main.py rainbow`: a rainbow effect that moves through the leds
 
+`./sudopython main.py white`: make all leds white
+
+`./sudopython main.py repeat-white`: continuously make all leds white (so newly connected ones are made white too)
+
 ### mapper
  
 `config.py` contains config such as the number of LEDs and camera resolution, so
